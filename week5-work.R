@@ -69,6 +69,7 @@ hdi_summary_low %>%
 #create a plot for hdi dataset
 #without creating any intermediate data structures
 #have no clue!!!!
+#will need to try again! 
 
 hdi %>% 
   ggplot() +
@@ -102,3 +103,33 @@ hdi_summary_low %>%
 
 
 #####data from buoy#####
+file <- "http://www.ndbc.noaa.gov/view_text_file.php?filename=44025h2011.txt.gz&dir=data/historical/stdmet/"
+readLines(file, n = 4) #read in the data and we can look at the first few lines so that we can see what type of data this is 
+
+#data starts on line 3, so when we read it in we need to skip the first two rows
+
+buoy44025 <- read_table(file,
+                        col_names = FALSE, #?? 
+                        skip = 2)
+#strict way of reading in data. each line needs to be the same length and each field and in the same position in every line.
+
+scan(buoy44025)
+
+measure <- scan(file,
+                nlines = 1,
+                what = character()) %>%
+  str_remove("#")
+
+units <- scan(file,
+              skip = 1,
+              nlines = 1,
+              what = character()) %>%
+  str_remove("#") %>%
+  str_replace("/", "_per_")
+
+names(buoy44025) <- paste(measure, units, sep = "_")
+names(buoy44025)
+#change the names of the columns and replace them with new names
+
+names(buoy44025) 
+
